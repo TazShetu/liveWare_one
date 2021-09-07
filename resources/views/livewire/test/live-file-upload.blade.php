@@ -57,7 +57,8 @@
                                 {{$c->body}}
                             </p>
                             @if($c->image)
-                                <img src="{{asset($c->image)}}" style="max-width: 200px; max-height: 200px; margin-bottom: 10px;">
+                                <img src="{{asset($c->image)}}"
+                                     style="max-width: 200px; max-height: 200px; margin-bottom: 10px;">
                                 <br>
                             @endif
                             <button class="pull-right btn btn-danger btn-sm mb-3"
@@ -71,14 +72,16 @@
             </div>
         @empty
         @endforelse
-        <div class="py-3">
+        @if(count($comments) > 0)
+            <div class="py-3">
             <span class="text-muted">
                 Displaying {{$comments->firstItem()}} ~ {{$comments->lastItem()}} of {{$comments->total()}} Comments
             </span>
-        </div>
-        <div>
-            {{ $comments->links() }}
-        </div>
+            </div>
+            <div>
+                {{ $comments->links() }}
+            </div>
+        @endif
     </div>
 </section>
 

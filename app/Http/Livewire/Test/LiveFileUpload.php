@@ -20,6 +20,20 @@ class LiveFileUpload extends Component
     public $inputTitle;
     public $inputBody;
     public $inputImage;
+    public $postId;
+
+
+    // An event has to be emitted
+    //  Event can be emitted from anywhere (any components or components view or global js)
+    // (here postSelected event emitted from Post component view)
+    protected $listeners = ['postSelected' => 'postSelectedMethod'];
+
+
+    public function postSelectedMethod($pid)
+    {
+        $this->postId = $pid;
+    }
+
 
 
     public function updatedInputImage()
@@ -33,19 +47,23 @@ class LiveFileUpload extends Component
     public function addComment()
     {
         $this->validate([
+            'postId' => 'required',
             'inputTitle' => 'required|string|min:1|max:191',
             'inputBody' => 'required|string|max:500',
-            'inputImage' => 'sometimes|required|image|max:1024',
+            'inputImage' => 'nullable|image|max:1024',
         ]);
         $comment = new Comment;
+        $comment->post_id = $this->postId;
         $comment->title = $this->inputTitle;
         $comment->body = $this->inputBody;
         $comment->creator = "John Doe";
         // file upload start
-        // liveware auto gives hash name to file
-        $path = $this->inputImage->store('commentImages', 'public_uploads_images');
-        $comment->image = 'uploads/' . $path;
-        // this 'uploads/' is from the disk public_uploads_images path
+        if ($this->inputImage) {
+            // liveware auto gives hash name to file
+            $path = $this->inputImage->store('commentImages', 'public_uploads_images');
+            $comment->image = 'uploads/' . $path;
+            // this 'uploads/' is from the disk public_uploads_images path
+        }
         // file upload end
         $comment->save();
         session()->flash('success', 'Comment successfully created.');
@@ -68,7 +86,7 @@ class LiveFileUpload extends Component
 
     public function render()
     {
-        $comments = Comment::orderBy('id', 'DESC')->paginate(2);
+        $comments = Comment::where('post_id', $this->postId)->orderBy('id', 'DESC')->paginate(2);
         return view('livewire.test.live-file-upload', compact('comments'));
     }
 

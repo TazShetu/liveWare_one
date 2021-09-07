@@ -21,8 +21,20 @@
 {{--@livewire('test.live-comment', ['initialComments' => $initialComments])--}}
 
 {{--@livewire('test.live-comment-pagination')--}}
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                @livewire('test.live-post')
+            </div>
+            <div class="col-md-9">
+                @livewire('test.live-file-upload')
+            </div>
+        </div>
+    </div>
+</div>
 
-@livewire('test.live-file-upload')
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
